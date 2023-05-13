@@ -1,9 +1,7 @@
 package com.codefish.keeilzhanstd.ecommerce.order;
 
 import com.codefish.keeilzhanstd.ecommerce.customer.Customer;
-import com.codefish.keeilzhanstd.ecommerce.order.Ord;
 import com.codefish.keeilzhanstd.ecommerce.customer.CustomerRepository;
-import com.codefish.keeilzhanstd.ecommerce.order.OrdRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

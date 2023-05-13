@@ -1,7 +1,5 @@
 package com.codefish.keeilzhanstd.ecommerce.category;
 
-import com.codefish.keeilzhanstd.ecommerce.category.Category;
-import com.codefish.keeilzhanstd.ecommerce.category.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

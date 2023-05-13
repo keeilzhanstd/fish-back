@@ -1,6 +1,5 @@
 package com.codefish.keeilzhanstd.ecommerce.customer;
 
-import com.codefish.keeilzhanstd.ecommerce.customer.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

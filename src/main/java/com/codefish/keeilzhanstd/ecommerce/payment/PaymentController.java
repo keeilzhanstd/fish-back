@@ -1,8 +1,5 @@
 package com.codefish.keeilzhanstd.ecommerce.payment;
 
-
-import com.codefish.keeilzhanstd.ecommerce.payment.Payment;
-import com.codefish.keeilzhanstd.ecommerce.payment.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,25 +15,28 @@ public class PaymentController {
 
     @Autowired
     private PaymentService service;
+    @Autowired
+    private PaymentDTOMapper mapper;
 
     @GetMapping("/payments")
-    public ResponseEntity<List<Payment>> getAllByUsername(@PathVariable String username, Principal principal) {
+    public ResponseEntity<List<PaymentDTO>> getAllByUsername(@PathVariable String username, Principal principal) {
         if (!principal.getName().equals(username)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        return ResponseEntity.ok(service.getByUsername(username));
+        return ResponseEntity.ok(service.getByUsername(username).stream().map(mapper).toList());
     }
 
     @PostMapping("/payments")
-    public ResponseEntity<Payment> create(@PathVariable String username, Principal principal, @RequestBody Payment payment) {
+    public ResponseEntity<PaymentDTO> create(@PathVariable String username, Principal principal, @RequestBody Payment payment) {
         if (!principal.getName().equals(username)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        return ResponseEntity.ok(service.create(username, payment));
+        Payment p = service.create(username, payment);
+        return ResponseEntity.ok(mapper.apply(p));
     }
 
     @DeleteMapping("/payments/{id}")
-    public ResponseEntity<Payment> deleteById(@PathVariable String username, Principal principal, @PathVariable Long id) {
+    public ResponseEntity<PaymentDTO> deleteById(@PathVariable String username, Principal principal, @PathVariable Long id) {
         if (!principal.getName().equals(username)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }

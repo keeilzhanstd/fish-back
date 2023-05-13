@@ -39,26 +39,22 @@ public class CustomerAuthenticationProvider implements AuthenticationProvider {
         String password = authentication.getCredentials().toString();
 
         Optional<Customer> c = repository.findByUsername(username);
-        if (c == null) {
+        if (c.isEmpty()) {
             throw new BadCredentialsException("Details not found");
         }
-
-        if (encoder.matches(password, c.get().getPassword())) {
-            logger.info(authentication.getName());
-            return new UsernamePasswordAuthenticationToken(username, password, getCustomerRoles(c.get().getRole()));
-        } else {
+        if (!encoder.matches(password, c.get().getPassword())) {
             throw new BadCredentialsException("Password mismatch");
         }
+        logger.info(authentication.getName());
+        return new UsernamePasswordAuthenticationToken(username, password, getCustomerRoles(c.get().getRole()));
     }
 
     private List<GrantedAuthority> getCustomerRoles(String studentRoles) {
         List<GrantedAuthority> grantedAuthorityList = new ArrayList<>();
         String[] roles = studentRoles.split(",");
         for (String role : roles) {
-            logger.info("Role: " + role);
             grantedAuthorityList.add(new SimpleGrantedAuthority(role.replaceAll("\\s+", "")));
         }
-
         return grantedAuthorityList;
     }
 

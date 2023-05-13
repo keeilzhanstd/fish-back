@@ -1,13 +1,13 @@
 package com.codefish.keeilzhanstd.ecommerce.customer;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class CustomerController {
@@ -17,35 +17,37 @@ public class CustomerController {
     @Autowired
     private CustomerRepository customerRepository;
 
+
     @PostMapping("/register")
-    public ResponseEntity createCustomer(@RequestBody Customer req) {
+    public ResponseEntity<CustomerDTO> createCustomer(@RequestBody Customer req) {
         return service.signUpUser(req);
     }
 
     @PostMapping("/login")
-    public Customer loginCustomer(@RequestBody Customer req) {return service.logInUser(req);}
+    public ResponseEntity<CustomerDTO> loginCustomer(@RequestBody Customer req) {
+        return service.logInUser(req);
+    }
 
     @GetMapping("/api/ecommerce/customer/{username}")
-    public ResponseEntity<Customer> getCustomer(@PathVariable String username, Principal principal) {
+    public ResponseEntity<CustomerDTO> getCustomer(@PathVariable String username, Principal principal) {
 
         if (!principal.getName().equals(username)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            throw new BadCredentialsException("You are not authorized");
         }
 
-        Optional<Customer> c = service.getOneByUsername(username);
-        return c.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
-
+        CustomerDTO c = service.getOneByUsername(username);
+        return c != null ? ResponseEntity.ok(c) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @PutMapping("/api/ecommerce/customer/{username}")
-    public ResponseEntity<Customer> updateCustomer(@PathVariable String username, @RequestBody Customer customer, Principal principal) {
+    public ResponseEntity<CustomerDTO> updateCustomer(@PathVariable String username, @RequestBody Customer customer, Principal principal) {
 
         if (!principal.getName().equals(username)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            throw new BadCredentialsException("You are not authorized");
         }
 
         try {
-            Customer c = service.update(username, customer);
+            CustomerDTO c = service.update(username, customer);
             return ResponseEntity.ok(c);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -54,14 +56,13 @@ public class CustomerController {
     }
 
     @DeleteMapping("/api/ecommerce/customer/{username}")
-    public ResponseEntity<Customer> deleteCustomer(@PathVariable String username, Principal principal) {
+    public ResponseEntity<HttpStatus> deleteCustomer(@PathVariable String username, Principal principal) {
 
         if (!principal.getName().equals(username)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            throw new BadCredentialsException("You are not authorized to delete this resource");
         }
 
         service.delete(username);
-
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 

@@ -16,7 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
@@ -35,86 +35,96 @@ public class CustomerService {
     private CustomerAuthenticationProvider authenticator;
     @Autowired
     private PaymentRepository paymentRepository;
+    @Autowired
+    private CustomerDTOMapper mapper;
 
 
-    public Customer update(String username, Customer req) throws Exception {
+    public CustomerDTO update(String username, Customer req) throws Exception {
         Optional<Customer> existing = repository.findByUsername(username);
 
-        if (existing.isPresent()) {
-            Customer updated = existing.get();
-            updated.setPassword(req.getPassword());
-            updated.setUsername(req.getUsername());
-            updated.setCart(req.getCart());
-            updated.setRole(req.getRole());
-            updated.setOrders(req.getOrders());
-            updated.setPayment(req.getPayment());
-            return repository.save(updated);
+        if (existing.isEmpty()) {
+            throw new Exception("Resource Not Found");
         }
 
-        throw new Exception("Resource Not Found");
+        Customer updated = existing.get();
+        updated.setPassword(req.getPassword());
+        updated.setUsername(req.getUsername());
+        updated.setCart(req.getCart());
+        updated.setRole(req.getRole());
+        updated.setOrders(req.getOrders());
+        updated.setPayment(req.getPayment());
+        repository.save(updated);
+
+        return mapper.apply(updated);
     }
 
     public void delete(String username) {
         Optional<Customer> existing = repository.findByUsername(username);
 
-        if (existing.isPresent()) {
-            //Clean all the orders linked to the user when deleting user.
-            for(Ord order : existing.get().getOrders()){
-                orderRepository.deleteById(order.getId());
-            }
-
-            //Clean all the payments linked to the user when deleting user.
-            for(Payment payment : existing.get().getPayment()){
-                paymentRepository.deleteById(payment.getId());
-            }
-
-            //Delete cart associated with this customer
-            cartRepository.deleteById(existing.get().getCart().getId());
-
-            //Safely delete user, after orders cleaned up.
-            repository.delete(existing.get());
+        if (existing.isEmpty()) {
+            throw new BadCredentialsException("User does not exist");
         }
+
+        //Clean all the orders linked to the user when deleting user.
+        for(Ord order : existing.get().getOrders()){
+            orderRepository.deleteById(order.getId());
+        }
+
+        //Clean all the payments linked to the user when deleting user.
+        for(Payment payment : existing.get().getPayment()){
+            paymentRepository.deleteById(payment.getId());
+        }
+
+        //Delete cart associated with this customer
+        cartRepository.deleteById(existing.get().getCart().getId());
+
+        //Safely delete user, after orders cleaned up.
+        repository.delete(existing.get());
     }
 
-    public ResponseEntity signUpUser(Customer user) {
+    public ResponseEntity<CustomerDTO> signUpUser(Customer user) {
 
         Optional<Customer> c = repository.findByUsername(user.getUsername());
-        if (c.isEmpty()) {
-            BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-
-            Cart cart = new Cart();
-            Cart cartForUser = cartService.create(cart);
-
-            user.setCart(cartForUser);
-            return ResponseEntity.ok(repository.save(user));
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username already taken.");
+        if (c.isPresent()) {
+            throw new BadCredentialsException("Username already taken");
         }
+
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+
+        Cart cart = new Cart();
+        Cart cartForUser = cartService.create(cart);
+
+        user.setCart(cartForUser);
+        user.setPayment(new ArrayList<>());
+        user.setOrders(new ArrayList<>());;
+        Customer userToDto = repository.save(user);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(mapper.apply(userToDto));
     }
 
-    public Customer logInUser(Customer req) {
+    public ResponseEntity<CustomerDTO> logInUser(Customer req) {
         Optional<Customer> c = repository.findByUsername(req.getUsername());
         if (c.isEmpty()) {
-            throw new BadCredentialsException("Details not found");
+            throw new BadCredentialsException("User not found");
         }
 
         if (encoder.matches(req.getPassword(), c.get().getPassword())) {
-            return c.get();
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(mapper.apply(c.get()));
         } else {
             throw new BadCredentialsException("Password mismatch");
         }
     }
 
-    public Optional<Customer> getOne(Long id) {
-        return repository.findById(id);
-    }
-
-    public List<Customer> getAll() {
-        return repository.findAll();
-    }
-
-    public Optional<Customer> getOneByUsername(String username) {
-        return repository.findByUsername(username);
+    public CustomerDTO getOneByUsername(String username) {
+        Optional<Customer> c = repository.findByUsername((username));
+        if(c.isEmpty()){
+            throw new BadCredentialsException("User not found");
+        }
+        return mapper.apply(c.get());
     }
 }

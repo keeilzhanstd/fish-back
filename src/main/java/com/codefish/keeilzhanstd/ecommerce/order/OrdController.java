@@ -1,7 +1,6 @@
 package com.codefish.keeilzhanstd.ecommerce.order;
 
-
-import com.codefish.keeilzhanstd.ecommerce.customer.Customer;
+import com.codefish.keeilzhanstd.ecommerce.customer.CustomerDTO;
 import com.codefish.keeilzhanstd.ecommerce.customer.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,16 +22,13 @@ public class OrdController {
 
     @GetMapping
     public ResponseEntity<List<Ord>> getAllOrdersByUsername(@PathVariable String username, Principal principal) {
-
         if (!principal.getName().equals(username)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        Optional<Customer> c = customerService.getOneByUsername(username);
-        if(c.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } else
-            return ResponseEntity.ok(service.getAllByUserId(c.get().getId()));
+        CustomerDTO c = customerService.getOneByUsername(username);
+
+        return ResponseEntity.ok(service.getAllByUserId(c.id()));
     }
 
     @PostMapping
@@ -52,9 +48,7 @@ public class OrdController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        Optional<Customer> c = customerService.getOneByUsername(username);
-        if(c.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-
+        CustomerDTO c = customerService.getOneByUsername(username);
         Optional<Ord> o = service.getOne(id);
         if(o.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 

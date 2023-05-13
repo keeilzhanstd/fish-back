@@ -1,6 +1,4 @@
 package com.codefish.keeilzhanstd.ecommerce.order;
-
-import com.codefish.keeilzhanstd.ecommerce.order.Ord;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

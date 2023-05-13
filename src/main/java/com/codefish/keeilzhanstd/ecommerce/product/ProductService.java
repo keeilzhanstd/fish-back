@@ -15,10 +15,15 @@ public class ProductService {
     public List<Product> getAllProducts() {
         return productRepository.findAll();
     }
-    public Optional<Product> getOne(Long id) { return productRepository.findById(id);}
+
+    public Optional<Product> getOne(Long id) {
+        return productRepository.findById(id);
+    }
+
     public Product createProduct(Product product) {
         return productRepository.save(product);
     }
+
     public Product updateProduct(Long id, Product product) {
         Optional<Product> existing = productRepository.findById(id);
         if (existing.isPresent()) {
