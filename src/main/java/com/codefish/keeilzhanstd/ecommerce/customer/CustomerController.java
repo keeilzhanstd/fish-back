@@ -17,10 +17,6 @@ public class CustomerController {
     @Autowired
     private CustomerRepository customerRepository;
 
-    @GetMapping("/")
-    public ResponseEntity<?> health_check() {
-        return ResponseEntity.ok(HttpStatus.OK);
-    }
 
     @PostMapping("/register")
     public ResponseEntity<CustomerDTO> createCustomer(@RequestBody Customer req) {

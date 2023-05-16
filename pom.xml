@@ -16,6 +16,29 @@
 	<properties>
 		<java.version>17</java.version>
 	</properties>
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<SPRING_PROFILE>dev</SPRING_PROFILE>
+			</properties>
+		</profile>
+		<profile>
+			<id>prod</id>
+			<properties>
+				<SPRING_PROFILE>prod</SPRING_PROFILE>
+			</properties>
+		</profile>
+		<profile>
+			<id>qa</id>
+			<properties>
+				<SPRING_PROFILE>qa</SPRING_PROFILE>
+			</properties>
+		</profile>
+	</profiles>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -32,6 +55,14 @@
 			<artifactId>postgresql</artifactId>
 			<version>42.6.0</version>
 		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>2.1.214</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
@@ -49,6 +80,11 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>2.0.0</version>
 		</dependency>
 	</dependencies>
 
