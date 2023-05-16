@@ -19,7 +19,7 @@ public class WebSecurityConfig {
         http
                 .csrf().disable()
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/login", "/register", "/version").permitAll()
+                        .requestMatchers("/login", "/register", "/version", "/").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/categories/add", "/categories/edit/**", "/products/add", "/products/edit/**")
                         .hasAuthority("ROLE_ADMIN")
