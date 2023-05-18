@@ -11,16 +11,16 @@ services:
     ports:
       - 8080:8080 # API will reside on this port
     environment:
-      - RDS_HOSTNAME=database
+      - RDS_HOSTNAME=postgres_qa # Service name of postgres container
       - RDS_PORT=5432
       - RDS_USERNAME=admin
       - RDS_PASSWORD=admin
       - RDS_DB_NAME=ecommerce-db
 
     depends_on:
-      - database
+      - postgres_qa
 
-  database:
+  postgres_qa:
     container_name: postgres_database_qa
     image: postgres:latest
     ports:
