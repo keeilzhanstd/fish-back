@@ -1,4 +1,6 @@
 FROM openjdk:17-oracle
 COPY target/*.jar app.jar
-EXPOSE 8080
+ARG SERVER_PORT
+ENV SERVER_PORT=$SERVER_PORT
+EXPOSE $SERVER_PORT
 ENTRYPOINT ["java","-jar","/app.jar"]
