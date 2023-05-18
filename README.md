@@ -8,7 +8,7 @@
 `git clone -b prod git@github.com:keeilzhanstd/fish-back.git`
 
 ## Run locally
-
+You need docker installed and running on your machine
 `SERVER_PORT` to specify port on which API will run.
 
 `docker-compose build --build-arg SERVER_PORT=8080`
