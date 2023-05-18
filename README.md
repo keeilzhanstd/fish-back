@@ -6,7 +6,7 @@ Default server port: 8000
 ### QA:
 `git clone -b qa git@github.com:keeilzhanstd/fish-back.git fish-back-qa`  
 `cd fish-back-qa`  
-Default server port: 8000
+Default server port: 8080
 
 ### PROD:
 `git clone -b prod git@github.com:keeilzhanstd/fish-back.git fish-back-prod`  
