@@ -3,6 +3,7 @@ version: '3.9'
 services:
   backend:
     container_name: fish_backend_qa
+    restart: on-failure
     build:
       context: .
       dockerfile: Dockerfile
