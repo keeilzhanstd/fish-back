@@ -1,0 +1,12 @@
+version: '3.9'
+
+services:
+  backend_dev:
+    container_name: fish_backend_dev
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVER_PORT: 8000 # API will reside on this port
+    ports:
+      - 8000:8000 # API will reside on this port
