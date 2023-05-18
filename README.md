@@ -1,11 +1,11 @@
 ### DEV:
-`git clone -b dev git@github.com:keeilzhanstd/fish-back.git`
+`git clone -b dev git@github.com:keeilzhanstd/fish-back.git fish-back-dev`
 
 ### QA:
-`git clone -b qa git@github.com:keeilzhanstd/fish-back.git`
+`git clone -b qa git@github.com:keeilzhanstd/fish-back.git fish-back-qa`
 
 ### PROD:
-`git clone -b prod git@github.com:keeilzhanstd/fish-back.git`
+`git clone -b prod git@github.com:keeilzhanstd/fish-back.git fish-back-prod`
 
 ## Run locally
 You need docker installed and running on your machine  
