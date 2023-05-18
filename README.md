@@ -1,7 +1,7 @@
 ### DEV:
 `git clone -b dev git@github.com:keeilzhanstd/fish-back.git fish-back-dev`  
 `cd fish-back-dev`  
-Default server port: 8080  
+Default server port: 8000  
 
 ### QA:
 `git clone -b qa git@github.com:keeilzhanstd/fish-back.git fish-back-qa`  
