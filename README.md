@@ -15,5 +15,5 @@ You need docker installed and running on your machine
 * `SERVER_PORT` to specify port on which API will run.
 
 ### Commands:  
-`docker-compose build --build-arg SERVER_PORT=8080`
+`docker-compose build --build-arg SERVER_PORT=8080`  
 `docker-compose up`
