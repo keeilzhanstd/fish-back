@@ -27,9 +27,9 @@ services:
     ports:
       - 5432:5432
     environment:
-      RDS_PASSWORD: admin
-      RDS_USERNAME: admin
-      RDS_DB_NAME: ecommerce-db
+      POSTGRES_PASSWORD: admin
+      POSTGRES_USER: admin
+      POSTGRES_DB: ecommerce-db
     volumes:
       - db:/var/lib/postgresql/data
 
