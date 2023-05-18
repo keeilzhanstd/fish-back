@@ -1,0 +1,35 @@
+version: '3.9'
+
+services:
+  backend:
+    container_name: fish_backend_qa
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080 # API will reside on this port
+    environment:
+      - RDS_HOSTNAME=database
+      - RDS_PORT=5432
+      - RDS_USERNAME=admin
+      - RDS_PASSWORD=admin
+      - RDS_DB_NAME=ecommerce-db
+      - SERVER_PORT=8080 # API will reside on this port
+
+    depends_on:
+      - database
+
+  database:
+    container_name: postgres_database_qa
+    image: postgres:latest
+    ports:
+      - 5432:5432
+    environment:
+      RDS_PASSWORD: admin
+      RDS_USERNAME: admin
+      RDS_DB_NAME: ecommerce-db
+    volumes:
+      - db:/var/lib/postgresql/data
+
+volumes:
+  db: {}
